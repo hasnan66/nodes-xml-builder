@@ -2,37 +2,39 @@
   <div>
     <nav class="navbar">
       <div class="text-xs-center">
-        <button class="menu-button" @click="downloadXml">App-Menü laden</button>
-        <button class="menu-button" @click="clearXml">übersichtliches App-Menü</button>
-        <button class="menu-button" @click="downloadXml">App-Menü speichern</button>
-        <button class="menu-button" @click="downloadXmlAs">App-Menü speichern unter...</button>
+        <button class="navbar-menu-button" @click="downloadXml">App-Menü laden</button>
+        <button class="navbar-menu-button" @click="clearXml">übersichtliches App-Menü</button>
+        <button class="navbar-menu-button" @click="downloadXml">App-Menü speichern</button>
+        <button class="navbar-menu-button" @click="downloadXmlAs">App-Menü speichern unter...</button>
       </div>
     </nav>
   </div>
   <h1>XML Builder</h1>
-  <div class="home" style="position: relative;">
+  <div class="home"  style="position: relative;">
     <input v-if="false" v-model="selectedNode" @keyup.enter="addNode" placeholder="Enter path">
     <button v-if="false" @click="toggleMenu">Add Path</button>
 
-    <!--<div v-for="node in nodes" :key="node.id">-->
-    <!--&lt;!&ndash; Other content related to the node &ndash;&gt;-->
-    <!--<NodeTree :nodes="nodes" @remove-item="removeNode" />-->
-    <!--</div>-->
     <div id="abc2">
       <div class="menu-container">
         <button class="menu-button" @click="toggleMenu">Hauptmenü</button>
         <!-- Menu -->
-        <div v-if="showMenu" class="menu" :style="{ top:  + '10px', left:  '10px' }">
-          <div @click="showPopupEditField" class="menu-item">Eintrag bearbeiten</div>
+        <div class="menu force-hide" id="node" :style="{ top:  + '10px', left:  '10px' }">
+          <div class="menu-item">Eintrag bearbeiten</div>
           <div @click="showPopup" class="menu-item">Eintrag einfügen</div>
           <div @click="removeNode(node)" class="menu-item">Eintrag löschen</div>
-          <div @click="handleOptionClick(node)" class="menu-item">Bild einfügen</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">PDF einfügen</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">Einzelauswahl</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">Keine Einzelauswahl</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">In die Zwischenablage kopieren</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">Aus Zwischenablage einfügen</div>
-          <div @click="handleOptionClick('Copy')" class="menu-item">Farbe wählen</div>
+          <label class="menu-item">
+            <input type="file" style="display: none" accept=".jpeg, .jpg, .png" @change="handleImageUpload" />
+            Bild einfügen
+          </label>
+          <label class="menu-item">
+            <input type="file" style="display: none" accept=".pdf" @change="handleFileUpload" />
+            PDF einfügen
+          </label>
+          <div  class="menu-item">Einzelauswahl</div>
+          <div  class="menu-item">Keine Einzelauswahl</div>
+          <div  class="menu-item">In die Zwischenablage kopieren</div>
+          <div  class="menu-item">Aus Zwischenablage einfügen</div>
+          <div  class="menu-item">Farbe wählen</div>
         </div>
       </div>
     </div>
@@ -50,100 +52,16 @@
       <button class="add-button margin5" @click="editNode(node,editText)">OK</button>
       <button class="add-button margin5" @click="cancelNode(editText)">Edit Button</button>
     </div>
-    <NodeTree :nodes="nodes"/>
+    <NodeTree :nodes="nodes" :parentNodeObj="parentNodeObj"/>
 
 
   </div>
 </template>
-<style>
-.menu-container {
-  position: relative;
-  display: inline-block;
-}
 
-.add-button {
-  cursor: pointer;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
-.menu-item {
-  cursor: pointer;
-  padding: 8px 12px;
-  border-bottom: 1px solid #ccc;
-  width: 100%;
-
-  /* Center the text horizontally using Flexbox */
-  display: flex;
-  justify-content: center;
-}
-
-.margin5 {
-  margin: 5px;
-}
-
-.force-hide {
-  display: none !important;
-}
-
-.navbar {
-  /* background-color: #007bff;*/
-  padding: 8px;
-  color: #fff;
-}
-
-.menu-button {
-  cursor: pointer;
-  padding: 4px 12px;
-  margin-top: 5px;
-  background-color: transparent; /* Set background color to transparent */
-  color: #007bff; /* Text color (you can adjust this as needed) */
-  border-radius: 4px;
-  border: 1px solid #007bff; /* Border color (you can adjust this as needed) */
-}
-
-.menu-button:last-child {
-  margin-right: 0;
-}
-
-.menu {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  width: 250px;
-  height: auto;
-  overflow-y: clip;
-  z-index: 9999;
-  align-items: flex-end;
-}
-
-.popup {
-  position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 16px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  width: 34%;
-}
-
-</style>
 <script>
 import NodeTree from "@/components/NodeTree";
 import $ from "jquery";
+import "@/assets/styles.css";
 
 export default {
   name: "App",
@@ -155,23 +73,53 @@ export default {
       counter: 1,
       selectedNode: "",
       nodes: [],
-      showMenu: false,
       showPopupVisible: false,
       textFieldValue: '',
-      childButtons: [],
       editText: '',
       showPopupEdit: false,
+      showPopupColor: false,
     };
   },
   methods: {
     toggleMenu() {
-      $('[id^="node"]').addClass('force-hide');
-      this.showMenu = !this.showMenu;
+
+      if ($('#node').hasClass('force-hide')) {
+        $('#node').removeClass('force-hide');
+      } else{
+        $('#node').addClass('force-hide');
+      }
+
+
+    },
+    closeMainMenu(){
+      $('#node').addClass('force-hide');
     },
 
-    handleOptionClick(option) {
-      // Handle the click of menu options here
-      console.log('Clicked option:', option);
+    handleFileUpload(event) {
+      $('[id^="node"]').addClass('force-hide');
+      const file = event.target.files[0];
+      // You can now access the uploaded file and handle it as needed
+      console.log('Uploaded file:', file);
+
+      if (file.type != 'application/pdf') {
+        alert('Please Upload PDF File only!!')
+      } else {
+        this.fileName = file.name;
+        this.addNode("pdfFileParam");
+      }
+    },
+    handleImageUpload(event) {
+      $('[id^="node"]').addClass('force-hide');
+      const file = event.target.files[0];
+      // You can now access the uploaded file and handle it as needed
+      console.log('Uploaded file:', file);
+
+      if (file.type != 'image/jpeg' && file.type != 'image/jpg' && file.type != 'image/png') {
+        alert('Please Upload Image File only!!')
+      } else {
+        this.fileName = file.name;
+        this.addNode("imageFileParam");
+      }
     },
     addNode(value) {
       console.log('Clicked add:');
@@ -179,7 +127,15 @@ export default {
       this.showPopupVisible = false;
       this.selectedNode = value;
       if (value) {
-        this.nodes.push({id: "node" + Date.now(), name: this.selectedNode, children: []});
+        if (value != "pdfFileParam" && value != "imageFileParam") {
+          this.nodes.push({
+            id: "node" + Date.now(),
+            name: this.selectedNode,
+            children: [],
+            selection: false,
+            fileType: "none"
+          });
+        }
         this.selectedNode = "";
       }
     },
@@ -197,14 +153,77 @@ export default {
       for (const item of arr) {
         if (Array.isArray(item.children)) {
           if (item.children[0] != null) {
-            xml += `${indent}<item name="${item.name}" id="${this.counter++}">\n`;
+            let instructionTag;
+            let colorString = item.color != "" && item.color != null ? 'color-hex="'+item.color+'"' : "";
+            if (item.fileType === "pdf" || item.fileType === "pdfs" || item.fileType === "image" || item.fileType === "images") {
+
+              instructionTag = "instruction-" + item.fileType;
+              if (item.selection) {
+                let name = item.name.replace(" - Einzelauswahl", "");
+                xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}">\n`;
+              } else {
+                xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}">\n`;
+              }
+            } else {
+              instructionTag = "item";
+
+              if (item.selection) {
+                let name = item.name.replace(" - Einzelauswahl", "");
+                xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}">\n`;
+              } else {
+                xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}">\n`;
+              }
+            }
+
             xml += this.arrayToXml(item.children, depth + 1);
-            xml += "  ".repeat(depth) + '</item>\n';
+            xml += "  ".repeat(depth) + `</${instructionTag}>\n`; // Close the correct tag based on fileType
           } else {
-            xml += `${indent}<item name="${item.name}" id="${this.counter++}"/>\n`;
+            let instructionTag;
+            let colorString = item.color != "" && item.color != null ? 'color-hex="'+item.color+'"' : "";
+
+            if (item.fileType === "pdf" || item.fileType === "pdfs" || item.fileType === "image" || item.fileType === "images") {
+              instructionTag = "instruction-" + item.fileType;
+
+              if (item.selection) {
+                let name = item.name.replace(" - Einzelauswahl", "");
+                xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}"/>\n`;
+              } else {
+                xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}"/>\n`;
+              }
+            } else {
+              instructionTag = "item";
+
+              if (item.selection) {
+                let name = item.name.replace(" - Einzelauswahl", "");
+                xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}"/>\n`;
+              } else {
+                xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}"/>\n`;
+              }
+            }
           }
         } else {
-          xml += `${indent}<item name="${item.name}" id="${this.counter++}"/>\n`;
+          let instructionTag;
+          let colorString = item.color != "" && item.color != null ? 'color-hex="'+item.color+'"' : "";
+
+          if (item.fileType === "pdf" || item.fileType === "pdfs" || item.fileType === "image" || item.fileType === "images") {
+            instructionTag = "instruction-" + item.fileType;
+
+            if (item.selection) {
+              let name = item.name.replace(" - Einzelauswahl", "");
+              xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}"/>\n`;
+            } else {
+              xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}"/>\n`;
+            }
+          } else {
+            instructionTag = "item";
+
+            if (item.selection) {
+              let name = item.name.replace(" - Einzelauswahl", "");
+              xml += `${indent}<${instructionTag} name="${name}" type="SingleSelection" ${colorString} id="${this.counter++}"/>\n`;
+            } else {
+              xml += `${indent}<${instructionTag} name="${item.name}" ${colorString} id="${this.counter++}"/>\n`;
+            }
+          }
         }
       }
 
@@ -252,12 +271,20 @@ export default {
         window.URL.revokeObjectURL(url);
       }
     },
-
-
     removeNode(idToRemove) {
-
-      console.log(idToRemove);
       this.nodes = this.nodes.filter((item) => item.id !== idToRemove);
+    },
+    copyNode(parentId, newNode) {
+      // Find the parent node with the specified ID
+      const parentNode = this.nodes.find(node => node.id === parentId);
+      if (parentNode) {
+        parentNode.children.push(newNode);
+      } else {
+        console.error("Parent node not found!");
+      }
+    },
+    parentNodeObj() {
+      return this.nodes;
     },
     currentDateTime() {
       const now = new Date();
@@ -275,17 +302,12 @@ export default {
     },
 
     showPopup() {
-      this.showMenu = false;
+      this.closeMainMenu();
       this.showPopupVisible = true;
       this.textFieldValue = '';
       this.editText = '';
     },
 
-    showPopupEditField() {
-      this.showPopupEdit = true;
-      this.textFieldValue = '';
-      this.editText = this.currentNode.name;
-    },
     editNode(node, editText) {
       this.showPopupEdit = false;
       node.name = editText;
